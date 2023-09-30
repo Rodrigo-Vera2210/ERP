@@ -14,7 +14,7 @@ function ListaCompras({ compras, get_lista_compras_page, count, proveedores }) {
                             <h2 class="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
                                 <a
                                     href="#"
-                                    class="text-gray-900 hover:text-purple-700"
+                                    class="text-gray-900 hover:text-amber-500"
                                 >
                                     Compra # {compra.id}
                                 </a>
@@ -55,8 +55,8 @@ function ListaCompras({ compras, get_lista_compras_page, count, proveedores }) {
                                 </div>
                             </div>
                             <div>
-                                <Link href="#" class=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-amber-500">
-                                    Editar
+                                <Link to={`../compras/${compra.id}`} class=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-amber-500">
+                                    Detalles
                                 </Link>
                                 <button className="bg-red-600 px-4 h-9 rounded-lg font-bold hover:bg-black hover:text-red-600">
                                     Eliminar

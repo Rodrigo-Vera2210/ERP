@@ -131,33 +131,23 @@ function Sidebar() {
 
                     <ul class="mt-2 space-y-1 px-4">
                         <li>
-                            <a
-                                href=""
+                            <Link
+                                to="/productos"
                                 class="block rounded-lg px-4 py-2 text-sm font-medium text-black hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
                             >
-                                Details
-                            </a>
+                                Productos
+                            </Link>
                         </li>
-
+                        
                         <li>
-                            <a
-                                href=""
+                            <Link
+                                to="/proveedores"
                                 class="block rounded-lg px-4 py-2 text-sm font-medium text-black hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
                             >
-                                Security
-                            </a>
+                                Proveedores
+                            </Link>
                         </li>
 
-                        <li>
-                            <form action="/logout">
-                                <button
-                                    type="submit"
-                                    class="w-full rounded-lg px-4 py-2 text-sm font-medium text-black [text-align:_inherit] hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
-                                >
-                                    Logout
-                                </button>
-                            </form>
-                        </li>
                     </ul>
                 </details>
             </li>
@@ -202,24 +192,6 @@ function Sidebar() {
                                 class="block rounded-lg px-4 py-2 text-sm font-medium text-black hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
                             >
                                 Lista
-                            </Link>
-                        </li>
-
-                        <li>
-                            <Link
-                                to="/proveedores"
-                                class="block rounded-lg px-4 py-2 text-sm font-medium text-black hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
-                            >
-                                Proveedores
-                            </Link>
-                        </li>
-
-                        <li>
-                            <Link
-                                to="/productos"
-                                class="block rounded-lg px-4 py-2 text-sm font-medium text-black hover:bg-gray-500 hover:text-amber-500 focus:bg-gray-500 focus:text-amber-500"
-                            >
-                                Productos
                             </Link>
                         </li>
                     </ul>

@@ -1,6 +1,8 @@
 import {
     GET_LIST_COMPRAS_SUCCESS,
     GET_LIST_COMPRAS_FAIL,
+    GET_COMPRA_SUCCESS,
+    GET_COMPRA_FAIL,
 } from './types'
 import axios from 'axios'
 
@@ -59,5 +61,31 @@ export const get_lista_compras_page = (page) => async dispatch => {
         dispatch({
             type: GET_LIST_COMPRAS_FAIL
         });
+    }
+}
+
+export const get_compra = (id) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+    try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/compras/view/${id}`, config)
+        if (res.status === 200) {
+            dispatch({
+                type: GET_COMPRA_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            dispatch({
+                type: GET_COMPRA_FAIL,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: GET_COMPRA_FAIL,
+        })
+        
     }
 }

@@ -16,7 +16,6 @@ export default function empleado(state = initialState, action) {
 
     switch (type) {
         case GET_EMPLEADO_SUCCESS:
-            console.log(payload);
             return {
                 ...state,
                 nombres: payload.nombres,

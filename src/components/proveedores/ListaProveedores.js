@@ -6,7 +6,7 @@ function ListaProveedores({ posts, get_lista_proveedores_page, count }) {
         <div className="overflow-hidden px-8 bg-white">
             <ul
                 role="list"
-                className="divide-y space-y-8 gap-8  divide-gray-200"
+                className="divide-y space-y-8 gap-8  divide-gray-200 pb-4"
             >
                 {posts &&
                     posts.map((proveedor, index) => (
@@ -14,7 +14,7 @@ function ListaProveedores({ posts, get_lista_proveedores_page, count }) {
                             <h2 class="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
                                 <a
                                     href="#"
-                                    class="text-gray-900 hover:text-purple-700"
+                                    class="text-gray-900 hover:text-amber-500"
                                 >
                                     {proveedor.nombre}
                                 </a>
@@ -53,9 +53,9 @@ function ListaProveedores({ posts, get_lista_proveedores_page, count }) {
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <Link href="#" class=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-amber-500">
-                                    Editar
+                            <div className="text-end">
+                                <Link to={`../proveedores/${proveedor.id}`} class=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-amber-500">
+                                    Detalle
                                 </Link>
                                 <button className="bg-red-600 px-4 h-9 rounded-lg font-bold hover:bg-black hover:text-red-600">
                                     Eliminar
@@ -64,6 +64,7 @@ function ListaProveedores({ posts, get_lista_proveedores_page, count }) {
                         </div>
                     ))}
             </ul>
+
             <SmallSetPagination
                 list_page={get_lista_proveedores_page}
                 list={posts}

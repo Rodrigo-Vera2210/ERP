@@ -20,3 +20,6 @@ class DetalleProductoProveedores(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     precio_compra = models.DecimalField(max_length=20, max_digits=12, decimal_places=2, default=0.0)
+
+    def __str__(self):
+        return self.precio_compra

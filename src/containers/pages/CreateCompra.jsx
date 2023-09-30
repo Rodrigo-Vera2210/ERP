@@ -52,18 +52,29 @@ function EditToolbar(props) {
     );
 }
 
-var Idproveedor;
 
-function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_proveedor }) {
+function CreateCompra({ 
+    get_lista_proveedores, proveedores, get_lista_productos_proveedor,productos 
+}) {
+    
     useEffect(() => {
         get_lista_proveedores();
-        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     var subtotal, iva, total
     const optionsProveedor = [];
-    const [rows, setRows] = React.useState(initialRows);
-    const [rowModesModel, setRowModesModel] = React.useState({});
+    const optionsProductos = [];
+    const [rows, setRows] = useState(initialRows);
+    const [rowModesModel, setRowModesModel] = useState({});
+    const [idProveedor, setIdProveedor] = useState(0)
+
+    
+    useEffect(()=>{
+        if(idProveedor!==0){get_lista_productos_proveedor(parseInt(idProveedor))
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[idProveedor])
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -103,6 +114,7 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
     };
 
     const processRowUpdate = (newRow) => {
+        console.log(newRow);
         const updatedRow = { ...newRow, isNew: false };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
         return updatedRow;
@@ -200,12 +212,28 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
                 document.getElementById("telefono").value = proveedor.telefono;
                 document.getElementById("email").value = proveedor.email;
                 document.getElementById("direccion").value = proveedor.direccion;
-                Idproveedor = proveedor.id
-                get_lista_productos_proveedor(proveedor.id)
+                setIdProveedor(proveedor.id)
             }
         });
     };
 
+    const onChangeProducto = (e) => {
+        productos.map((producto, index) => {
+            if (e.value === producto.id) {
+                const id= producto.id
+                setRows((oldRows) => [...oldRows, {
+                    id,
+                    nombre: producto.nombre,
+                    marca: producto.marca,
+                    isNew: true }]);
+                setRowModesModel((oldModel) => ({
+                    ...oldModel,
+                    [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+                }));
+            }
+        });
+
+    }
     async function cargarProveedores(){
         proveedores?
         await proveedores.map(async (proveedor, index) =>{
@@ -214,6 +242,16 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
         : optionsProveedor.push({value: 'cargando'})
     }
     cargarProveedores()
+
+    async function cargarProductos(){
+        productos?
+        await productos.map(async (producto, index) =>{
+            return await optionsProductos.push({ value: producto.id, label: producto.nombre })
+        })
+        : optionsProductos.push({value: 'cargando'})
+    }
+    cargarProductos()
+
     function calculoSubTotal() {
         subtotal=0.0 
         rows.length >= 1 ? rows.map((fila)=>(
@@ -245,8 +283,7 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
             }
         };
         const formData = new FormData()
-        console.log(rows);
-        formData.append('proveedor',Idproveedor)
+        formData.append('proveedor',idProveedor)
         formData.append('productos',JSON.stringify(rows))
         formData.append('subtotal',subtotal)
         formData.append('iva',iva)
@@ -362,6 +399,11 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
             <section className="border-t border-gray-300">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="py-3 font-bold text-xl">Detalle Compra</h2>
+                    <Select
+                        options={optionsProductos}
+                        onChange={(e) => onChangeProducto(e)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5"
+                    />
                     <Box
                         sx={{
                             height: 500,
@@ -418,6 +460,7 @@ function CreateCompra({ get_lista_proveedores, proveedores, get_lista_productos_
 }
 const mapStateToProps = (state) => ({
     proveedores: state.proveedores.lista_proveedores,
+    productos: state.productos.lista_productos_proveedor
 });
 
 export default connect(mapStateToProps, {

@@ -1,10 +1,13 @@
 import {
     GET_LIST_PROVEEDORES_SUCCESS,
     GET_LIST_PROVEEDORES_FAIL,
+    GET_PROVEEDOR_SUCCESS,
+    GET_PROVEEDOR_FAIL,
 } from '../actions/proveedores/types'
 
 const initialState = {
     lista_proveedores: null,
+    proveedor: null,
     count:null,
     next:null,
     previous:null
@@ -27,6 +30,15 @@ export default function proveedores(state = initialState, action) {
                 count: null,
                 next: null,
                 previous: null,
+            }
+        case GET_PROVEEDOR_SUCCESS:
+            return {
+                ...state,
+                proveedor: payload.proveedor,
+            }
+        case GET_PROVEEDOR_FAIL:
+            return {
+                ...state,
             }
     
         default:

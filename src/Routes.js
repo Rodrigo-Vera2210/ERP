@@ -12,6 +12,9 @@ import ListarProveedores from 'containers/pages/ListarProveedores';
 import CreateCompra from 'containers/pages/CreateCompra';
 import ListarProductos from 'containers/pages/ListarProductos';
 import ListarCompras from 'containers/pages/ListarCompras';
+import ProductoView from 'containers/pages/ProductoView';
+import ProveedoresView from 'containers/pages/ProveedoresView';
+import ComprasView from 'containers/pages/ComprasView';
 
 function AnimatedRoutes(){
 
@@ -30,12 +33,15 @@ function AnimatedRoutes(){
             <Route path="/user/view" element={<UserView />} />
             {/* Proveedores Display */}
             <Route path="/proveedores" element={<ListarProveedores />} />
+            <Route path="/proveedores/:id" element={<ProveedoresView />} />
             <Route path="/proveedores/crear" element={<CreateProveedor />} />
             {/* Compras Display */}
             <Route path="/compras" element={<ListarCompras />} />
+            <Route path="/compras/:id" element={<ComprasView />} />
             <Route path="/compras/crear" element={<CreateCompra />} />
             {/* Productos Display */}
             <Route path="/productos" element={<ListarProductos />} />
+            <Route path="/productos/:id" element={<ProductoView />} />
         </Routes>
     )
 }

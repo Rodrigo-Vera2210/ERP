@@ -30,4 +30,45 @@ class ListaProveedores(APIView):
             serializer = ListaProveedoresSerializer(results, many=True)
             return paginator.get_paginated_response({'proveedores':serializer.data})
         else:
-            return Response({'error':'Proveedores no encontrados'}, status=status.HTTP_404_NOT_FOUND) 
+            return Response({'error':'Proveedores no encontrados'}, status=status.HTTP_404_NOT_FOUND)
+
+class ProveedorView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request, proveedor, format=None):
+        if Proveedor.objects.filter(id = proveedor).exists():
+            result = Proveedor.objects.get(id = proveedor)
+            serializer = ListaProveedoresSerializer(result)
+            return Response({'proveedor':serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Proveedor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+class ProveedorEdit(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def put(self, request, proveedor, format=None):
+        if Proveedor.objects.filter(id = proveedor).exists():
+            data = request.data
+            result = Proveedor.objects.get(id = proveedor)
+            if(data['nombre']!=''):
+                result.nombre = data['nombre']
+            if(data['ruc']!=''):
+                result.ruc = data['ruc']
+            if(data['direccion']!=''):
+                result.direccion = data['direccion']
+            if(data['telefono']!=''):
+                result.telefono = data['telefono']
+            if(data['email']!=''):
+                result.email = data['email']
+            result.save()
+            return Response({'success':'Editado con exito'})
+        else:
+            return Response({'error':'Proveedor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+class ProveedorDelete(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def delete(self, request, proveedor, format=None):
+        if Proveedor.objects.filter(id = proveedor).exists():
+            result = Proveedor.objects.get(id = proveedor)
+            result.delete()
+            return Response({'success':'Eliminado con exito'})
+        else:
+            return Response({'error':'Proveedor no encontrado'}, status=status.HTTP_404_NOT_FOUND)

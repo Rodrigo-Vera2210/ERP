@@ -234,8 +234,8 @@ function Layout({
                     >
                         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                     </Transition.Child>
-                    <div className="inset-y-1/2 z-10 overflow-y-auto">
-                        <div className="flex justify-center p-4 text-center">
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full item-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <Dialog.Panel className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 shadow-xl">
                                 <div>
                                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">

@@ -4,10 +4,10 @@ from .models import *
 class ListaProductosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields=[
-            'id',
-            'nombre',
-            'marca',
-            'cantidad_total',
-            'precio_venta',
-        ]
+        fields='__all__'
+
+
+class DetProductoProveedorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleProductoProveedores
+        fields = '__all__'
