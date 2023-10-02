@@ -5,7 +5,7 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=255, blank=False, null=False)
     marca = models.CharField(max_length=255, blank=False, null=False)
     
-    cantidad_total = models.IntegerField(max_length=20, default=0)
+    cantidad_total = models.IntegerField(default=0)
     precio_venta = models.DecimalField(max_length=20, max_digits=12, decimal_places=2, default=0.0)
 
 

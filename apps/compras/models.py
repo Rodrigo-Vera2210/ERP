@@ -19,7 +19,7 @@ class Compra(models.Model):
 class DetalleCompra(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
-    cantidad = models.IntegerField(max_length=50, default=1)
+    cantidad = models.IntegerField(default=1)
     subtotal = models.DecimalField(max_length=20, max_digits=12, decimal_places=2, default=0.0)
     
     def __str__(self):

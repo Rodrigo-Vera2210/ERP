@@ -37,7 +37,10 @@ PROJECT_APPS = [
     'apps.user',
     'apps.proveedores',
     'apps.productos',
-    'apps.compras'
+    'apps.compras',
+    'apps.clientes',
+    'apps.servicios',
+    'apps.ventas'
 
 ]
 
