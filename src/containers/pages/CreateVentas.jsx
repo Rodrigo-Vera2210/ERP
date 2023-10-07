@@ -1,12 +1,9 @@
 import Layout from "hocs/layout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { connect } from "react-redux";
-import { get_lista_proveedores } from "redux/actions/proveedores/proveedores";
 import React from "react";
 import Select from "react-select";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
@@ -18,120 +15,116 @@ import {
     GridActionsCellItem,
     GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-import {
-    randomId,
-} from "@mui/x-data-grid-generator";
 import axios from "axios";
-import { get_lista_productos_proveedor } from "redux/actions/productos/productos";
+import { get_lista_productos } from "redux/actions/productos/productos";
+import { get_lista_clientes, get_lista_clientes_page } from "redux/actions/clientes/clientes";
+import { get_lista_servicios } from "redux/actions/servicios/servicios";
+import {
+    CheckIcon
+} from '@heroicons/react/24/outline'
+import { useNavigate } from "react-router-dom";
+import { Dialog, Transition } from '@headlessui/react'
 
 const initialRows = [
 ];
 
-function EditToolbar(props) {
-    const { setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-        const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, isNew: true }]);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
-        }));
-    };
-
-    return (
-        <GridToolbarContainer>
-            <Button
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleClick}
-            >
-                Añadir producto
-            </Button>
-        </GridToolbarContainer>
-    );
-}
-
-
-function CreateVentas({ 
-    get_lista_proveedores, proveedores, get_lista_productos_proveedor,productos 
+function CreateVenta({ 
+    get_lista_clientes, 
+    clientes, 
+    get_lista_productos, 
+    get_lista_servicios, 
+    productos, 
+    servicios 
 }) {
-    
+
     useEffect(() => {
-        get_lista_proveedores();
+        get_lista_clientes();
+        get_lista_productos();
+        get_lista_servicios();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     var subtotal, iva, total
-    const optionsProveedor = [];
+    const optionsClientes = [];
     const optionsProductos = [];
-    const [rows, setRows] = useState(initialRows);
-    const [rowModesModel, setRowModesModel] = useState({});
-    const [idProveedor, setIdProveedor] = useState(0)
+    const optionsServicios = [];
+    const [rowsProductos, setRowsProductos] = useState(initialRows);
+    const [rowsServicios, setRowsServicios] = useState(initialRows);
+    const [rowModesModelProductos, setRowModesModelProductos] = useState({});
+    const [rowModesModelServicios, setRowModesModelServicios] = useState({});
+    const [open, setOpen] = useState(false);
+    const [idCliente, setIdCliente] = useState(0)
+    const navigate = useNavigate()
 
+    {/* Manejadores tabla Productos*/}
+    function EditToolbarProductos() {
     
-    useEffect(()=>{
-        if(idProveedor!==0){get_lista_productos_proveedor(parseInt(idProveedor))
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[idProveedor])
+        return (
+            <GridToolbarContainer>
+                <h3 className="text-xl p-2">Añadir Productos</h3>
+                <Select
+                    options={optionsProductos}
+                    onChange={(e) => onChangeProducto(e)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5"
+                />
+            </GridToolbarContainer>
+        );
+    }
 
-    const handleRowEditStop = (params, event) => {
+    const handleRowEditStopProductos = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
             event.defaultMuiPrevented = true;
         }
     };
 
-    const handleEditClick = (id) => () => {
-        setRowModesModel({
-            ...rowModesModel,
+    const handleEditClickProductos = (id) => () => {
+        setRowModesModelProductos({
+            ...rowModesModelProductos,
             [id]: { mode: GridRowModes.Edit },
         });
     };
 
-    const handleSaveClick = (id) => () => {
+    const handleSaveClickProductos = (id) => () => {
         
-        setRowModesModel({
-            ...rowModesModel,
+        setRowModesModelProductos({
+            ...rowModesModelProductos,
             [id]: { mode: GridRowModes.View },
         });
     };
 
-    const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+    const handleDeleteClickProductos = (id) => () => {
+        setRowsProductos(rowsProductos.filter((row) => row.id !== id));
     };
 
-    const handleCancelClick = (id) => () => {
-        setRowModesModel({
-            ...rowModesModel,
+    const handleCancelClickProductos = (id) => () => {
+        setRowModesModelProductos({
+            ...rowModesModelProductos,
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
 
-        const editedRow = rows.find((row) => row.id === id);
+        const editedRow = rowsProductos.find((row) => row.id === id);
         if (editedRow.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
+            setRowsProductos(rowsProductos.filter((row) => row.id !== id));
         }
     };
 
-    const processRowUpdate = (newRow) => {
-        console.log(newRow);
+    const processRowUpdateProductos = (newRow) => {
         const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        setRowsProductos(rowsProductos.map((row) => (row.id === newRow.id ? updatedRow : row)));
         return updatedRow;
     };
 
-    const handleRowModesModelChange = (newRowModesModel) => {
-        setRowModesModel(newRowModesModel);
+    const handleRowModesModelChangeProductos = (newRowModesModel) => {
+        setRowModesModelProductos(newRowModesModel);
     };
 
-    function getFullName(params) {
+    function getFullNameProductos(params) {
         params.row.subtotal = params.row.cantidad * params.row.precio
         return params.row.subtotal.toFixed(2);
     }
 
-    const columns = [
-        { field: "nombre", headerName: "Nombre", width: 250, editable: true },
-        { field: "marca", headerName: "Marca", width: 250, editable: true },
+    const columnsProductos = [
+        { field: "nombre", headerName: "Nombre", width: 250 },
         {
             field: "cantidad",
             headerName: "Cantidad",
@@ -146,14 +139,13 @@ function CreateVentas({
             headerName: "Precio",
             type: "number",
             width: 125,
-            editable: true,
         },
         {
             field: "subtotal",
             headerName: "Subtotal",
             type: "number",
             width: 150,
-            valueGetter: getFullName,
+            valueGetter: getFullNameProductos,
         },
         {
             field: "actions",
@@ -163,7 +155,7 @@ function CreateVentas({
             cellClassName: "actions",
             getActions: ({ id }) => {
                 const isInEditMode =
-                    rowModesModel[id]?.mode === GridRowModes.Edit;
+                    rowModesModelProductos[id]?.mode === GridRowModes.Edit;
 
                 if (isInEditMode) {
                     return [
@@ -173,13 +165,13 @@ function CreateVentas({
                             sx={{
                                 color: "primary.main",
                             }}
-                            onClick={handleSaveClick(id)}
+                            onClick={handleSaveClickProductos(id)}
                         />,
                         <GridActionsCellItem
                             icon={<CancelIcon />}
                             label="Cancel"
                             className="textPrimary"
-                            onClick={handleCancelClick(id)}
+                            onClick={handleCancelClickProductos(id)}
                             color="inherit"
                         />,
                     ];
@@ -190,13 +182,154 @@ function CreateVentas({
                         icon={<EditIcon />}
                         label="Edit"
                         className="textPrimary"
-                        onClick={handleEditClick(id)}
+                        onClick={handleEditClickProductos(id)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        onClick={handleDeleteClickProductos(id)}
+                        color="inherit"
+                    />,
+                ];
+            },
+        },
+    ];
+
+    {/*Manejadores tabla Servicios */}
+
+    
+    function EditToolbarServicios() {
+        return (
+            <GridToolbarContainer>
+                <h3 className="text-xl p-2">Añadir Servicios</h3>
+                <Select
+                    options={optionsServicios}
+                    onChange={(e) => onChangeServicio(e)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5"
+                />
+            </GridToolbarContainer>
+        );
+    }
+
+    const handleRowEditStopServicios = (params, event) => {
+        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+            event.defaultMuiPrevented = true;
+        }
+    };
+
+    const handleEditClickServicios = (id) => () => {
+        setRowModesModelServicios({
+            ...rowModesModelServicios,
+            [id]: { mode: GridRowModes.Edit },
+        });
+    };
+
+    const handleSaveClickServicios = (id) => () => {
+        
+        setRowModesModelServicios({
+            ...rowModesModelServicios,
+            [id]: { mode: GridRowModes.View },
+        });
+    };
+
+    const handleDeleteClickServicios = (id) => () => {
+        setRowsServicios(rowsServicios.filter((row) => row.id !== id));
+    };
+
+    const handleCancelClickServicios = (id) => () => {
+        setRowModesModelServicios({
+            ...rowModesModelServicios,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        });
+
+        const editedRow = rowsServicios.find((row) => row.id === id);
+        if (editedRow.isNew) {
+            setRowsServicios(rowsServicios.filter((row) => row.id !== id));
+        }
+    };
+
+    const processRowUpdateServicios = (newRow) => {
+        const updatedRow = { ...newRow, isNew: false };
+        setRowsServicios(rowsServicios.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        return updatedRow;
+    };
+
+    const handleRowModesModelChangeServicios = (newRowModesModel) => {
+        setRowModesModelServicios(newRowModesModel);
+    };
+
+    function getFullNameServicios(params) {
+        params.row.subtotal = params.row.cantidad * params.row.precio
+        return params.row.subtotal.toFixed(2);
+    }
+    
+    const columnsServicios = [
+        { field: "nombre", headerName: "Nombre", width: 250 },
+        {
+            field: "cantidad",
+            headerName: "Cantidad",
+            type: "number",
+            width: 150,
+            align: "left",
+            headerAlign: "left",
+            editable: true,
+        },
+        {
+            field: "precio",
+            headerName: "Precio",
+            type: "number",
+            width: 125,
+        },
+        {
+            field: "subtotal",
+            headerName: "Subtotal",
+            type: "number",
+            width: 150,
+            valueGetter: getFullNameServicios,
+        },
+        {
+            field: "actions",
+            type: "actions",
+            headerName: "Acciones",
+            width: 100,
+            cellClassName: "actions",
+            getActions: ({ id }) => {
+                const isInEditMode =
+                    rowModesModelServicios[id]?.mode === GridRowModes.Edit;
+
+                if (isInEditMode) {
+                    return [
+                        <GridActionsCellItem
+                            icon={<SaveIcon />}
+                            label="Save"
+                            sx={{
+                                color: "primary.main",
+                            }}
+                            onClick={handleSaveClickServicios(id)}
+                        />,
+                        <GridActionsCellItem
+                            icon={<CancelIcon />}
+                            label="Cancel"
+                            className="textPrimary"
+                            onClick={handleCancelClickServicios(id)}
+                            color="inherit"
+                        />,
+                    ];
+                }
+
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClickServicios(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClickServicios(id)}
                         color="inherit"
                     />,
                 ];
@@ -204,15 +337,16 @@ function CreateVentas({
         },
     ];
     
+    {/*OnChange */}
 
-    const onChangeProveedor = (e) => {
-        proveedores.map((proveedor, index) => {
-            if (e.value === proveedor.id) {
-                document.getElementById("ruc").value = proveedor.ruc;
-                document.getElementById("telefono").value = proveedor.telefono;
-                document.getElementById("email").value = proveedor.email;
-                document.getElementById("direccion").value = proveedor.direccion;
-                setIdProveedor(proveedor.id)
+    const onChangeCliente = (e) => {
+        clientes.map((cliente, index) => {
+            if (e.value === cliente.id) {
+                document.getElementById("cedula").value = cliente.c_id;
+                document.getElementById("telefono").value = cliente.telefono;
+                document.getElementById("email").value = cliente.email;
+                document.getElementById("direccion").value = cliente.direccion;
+                setIdCliente(cliente.id)
             }
         });
     };
@@ -221,12 +355,13 @@ function CreateVentas({
         productos.map((producto, index) => {
             if (e.value === producto.id) {
                 const id= producto.id
-                setRows((oldRows) => [...oldRows, {
+                setRowsProductos((oldRows) => [...oldRows, {
                     id,
                     nombre: producto.nombre,
-                    marca: producto.marca,
+                    cantidad: 1,
+                    precio: producto.precio_venta,
                     isNew: true }]);
-                setRowModesModel((oldModel) => ({
+                setRowModesModelProductos((oldModel) => ({
                     ...oldModel,
                     [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
                 }));
@@ -234,14 +369,36 @@ function CreateVentas({
         });
 
     }
-    async function cargarProveedores(){
-        proveedores?
-        await proveedores.map(async (proveedor, index) =>{
-            return await optionsProveedor.push({ value: proveedor.id, label: proveedor.nombre })
-        })
-        : optionsProveedor.push({value: 'cargando'})
+
+    const onChangeServicio = (e) => {
+        servicios.map((servicio, index) => {
+            if (e.value === servicio.id) {
+                const id= servicio.id
+                setRowsServicios((oldRows) => [...oldRows, {
+                    id,
+                    nombre: servicio.nombre,
+                    cantidad: 1,
+                    precio: servicio.precio,
+                    isNew: true }]);
+                setRowModesModelServicios((oldModel) => ({
+                    ...oldModel,
+                    [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+                }));
+            }
+        });
+
     }
-    cargarProveedores()
+
+    {/*Carga de datos en los selects */}
+
+    async function cargarclientes(){
+        clientes?
+        await clientes.map(async (clientes, index) =>{
+            return await optionsClientes.push({ value: clientes.id, label: clientes.nombres })
+        })
+        : optionsClientes.push({value: 'cargando'})
+    }
+    cargarclientes()
 
     async function cargarProductos(){
         productos?
@@ -251,14 +408,29 @@ function CreateVentas({
         : optionsProductos.push({value: 'cargando'})
     }
     cargarProductos()
+    
+    async function cargarServicios(){
+        servicios?
+        await servicios.map(async (servicio, index) =>{
+            return await optionsServicios.push({ value: servicio.id, label: servicio.nombre })
+        })
+        : optionsServicios.push({value: 'cargando'})
+    }
+    cargarServicios()
 
+    {/* Calculo de valores */}
+    
     function calculoSubTotal() {
         subtotal=0.0 
-        rows.length >= 1 ? rows.map((fila)=>(
+        rowsProductos.length >= 1 ? rowsProductos.map((fila)=>(
             subtotal += fila.subtotal))
-        :subtotal = 0.0
+        :subtotal += 0.0
+        rowsServicios.length >= 1 ? rowsServicios.map((fila)=>(
+            subtotal += fila.subtotal))
+        :subtotal += 0.0
         return <>{subtotal.toFixed(2)}</>
     }
+
     function calculoIva() {
         iva= subtotal !== 0 ?
         subtotal*0.12
@@ -266,12 +438,14 @@ function CreateVentas({
 
         return <>{iva.toFixed(2)}</>
     }
+
     function calculoTotal() {
         total = subtotal !== 0 ?
         subtotal+iva
         :0.00
         return <>{total.toFixed(2)}</>
     }
+
     const onSubmit = e => {
         e.preventDefault()
 
@@ -283,67 +457,69 @@ function CreateVentas({
             }
         };
         const formData = new FormData()
-        formData.append('proveedor',idProveedor)
-        formData.append('productos',JSON.stringify(rows))
+        formData.append('cliente',idCliente)
+        formData.append('productos',JSON.stringify(rowsProductos))
+        formData.append('servicios',JSON.stringify(rowsServicios))
         formData.append('subtotal',subtotal)
         formData.append('iva',iva)
         formData.append('total',total)
         
         const enviarDatos = async() => {
             try {
-                const res = await axios.put(`${process.env.REACT_APP_API_URL}/compras/crear/`, formData, config)
+                const res = await axios.post(`${process.env.REACT_APP_API_URL}/ventas/crear/`, formData, config)
             } catch (error) {
                 alert('Error al enviar')
             }
         }
         enviarDatos()
+        setOpen(true)
     };
 
     return (
         <Layout>
             <section className="bg-white w-full">
                 <h1 className="py-4 text-4xl font-bold border-b border-gray-300">
-                    Crear Compra
+                    Crear Venta
                 </h1>
                 <div className="py-4 px-4 mx-auto max-w-6xl lg:py-10 ">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900 ">
-                        Proveedor
+                    <h2 className="mb-4 text-2xl font-bold text-gray-900 ">
+                        Cliente
                     </h2>
                     <form onSubmit={(e) => onSubmit(e)}>
                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                             <div className="sm:col-span-2">
                                 <label
-                                    for="nombre"
+                                    htmlFor="nombre"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Nombre
                                 </label>
                                 <Select
-                                    options={optionsProveedor}
-                                    onChange={(e) => onChangeProveedor(e)}
+                                    options={optionsClientes}
+                                    onChange={(e) => onChangeCliente(e)}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5"
                                 />
                             </div>
                             <div className="w-full">
                                 <label
-                                    for="ruc"
+                                    htmlFor="cedula"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
-                                    Ruc
+                                    cedula
                                 </label>
                                 <input
                                     type="text"
-                                    name="ruc"
-                                    id="ruc"
+                                    name="cedula"
+                                    id="cedula"
                                     disabled
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
-                                    placeholder="Escriba el ruc"
+                                    placeholder="Escriba el cedula"
                                     required=""
                                 />
                             </div>
                             <div className="w-full">
                                 <label
-                                    for="telefono"
+                                    htmlFor="telefono"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Telefono
@@ -360,7 +536,7 @@ function CreateVentas({
                             </div>
                             <div className="sm:col-span-2">
                                 <label
-                                    for="direccion"
+                                    htmlFor="direccion"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Dirección
@@ -377,7 +553,7 @@ function CreateVentas({
                             </div>
                             <div className="sm:col-span-2">
                                 <label
-                                    for="email"
+                                    htmlFor="email"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Email
@@ -398,12 +574,7 @@ function CreateVentas({
             </section>
             <section className="border-t border-gray-300">
                 <div className="max-w-6xl mx-auto">
-                    <h2 className="py-3 font-bold text-xl">Detalle Compra</h2>
-                    <Select
-                        options={optionsProductos}
-                        onChange={(e) => onChangeProducto(e)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5"
-                    />
+                    <h2 className="py-3 font-bold text-2xl">Detalle de Venta</h2>
                     <Box
                         sx={{
                             height: 500,
@@ -417,21 +588,52 @@ function CreateVentas({
                         }}
                     >
                         <DataGrid
-                            rows={rows}
-                            columns={columns}
+                            rows={rowsProductos}
+                            columns={columnsProductos}
                             editMode="row"
-                            rowModesModel={rowModesModel}
-                            onRowModesModelChange={handleRowModesModelChange}
-                            onRowEditStop={handleRowEditStop}
-                            processRowUpdate={processRowUpdate}
+                            rowModesModel={rowModesModelProductos}
+                            onRowModesModelChange={handleRowModesModelChangeProductos}
+                            onRowEditStop={handleRowEditStopProductos}
+                            processRowUpdate={processRowUpdateProductos}
                             slots={{
-                                toolbar: EditToolbar,
+                                toolbar: EditToolbarProductos,
                             }}
                             slotProps={{
-                                toolbar: { setRows, setRowModesModel },
+                                toolbar: { setRowsProductos, setRowModesModelProductos },
                             }}
                         />
                     </Box>
+
+                    <Box
+                        className="py-10"
+                        sx={{
+                            height: 500,
+                            width: "100%",
+                            "& .actions": {
+                                color: "text.secondary",
+                            },
+                            "& .textPrimary": {
+                                color: "text.primary",
+                            },
+                        }}
+                    >
+                        <DataGrid
+                            rows={rowsServicios}
+                            columns={columnsServicios}
+                            editMode="row"
+                            rowModesModel={rowModesModelServicios}
+                            onRowModesModelChange={handleRowModesModelChangeServicios}
+                            onRowEditStop={handleRowEditStopServicios}
+                            processRowUpdate={processRowUpdateServicios}
+                            slots={{
+                                toolbar: EditToolbarServicios,
+                            }}
+                            slotProps={{
+                                toolbar: { setRowsServicios, setRowModesModelServicios },
+                            }}
+                        />
+                    </Box>
+                    
                     <div className="flex flex-col max-w-full text-end items-end justify-end justify-items-end justify-self-end">
                         <div className="flex px-3 py-2 border-b border-gray-300 max-w-md justify-end">
                             <label className="max-w-sm px-2 font-semibold">SubTotal: </label>
@@ -451,19 +653,88 @@ function CreateVentas({
                                 <>{calculoTotal()}</>
                             }</p>
                         </div>
+                        <button 
+                            className="h-9 px-4 rounded-lg bg-amber-500 mx-4 my-3 font-bold text-white hover:bg-black "
+                            onClick={e=>onSubmit(e)}
+                        >
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </section>
-            <button onClick={e=>onSubmit(e)}>Imprimir</button>
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                    <div>
+                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                                            <CheckIcon
+                                                className="h-6 w-6 text-green-600"
+                                                aria-hidden="true"
+                                            />
+                                        </div>
+                                        <div className="mt-3 text-center sm:mt-5">
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Felicidades
+                                            </Dialog.Title>
+                                            <div className="mt-2">
+                                                <p className="text-sm text-gray-500">
+                                                    La venta ha sido creado con exito!
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 sm:mt-6">
+                                        <button
+                                            type="button"
+                                            className="inline-flex w-full justify-center py-2 px-4 rounded-md border border-transparent font-medium  bg-amber-500 text-black hover:bg-black hover:text-amber-500 sm:text-sm"
+                                            onClick={() => navigate(-1)}
+                                        >
+                                            Aceptar
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </Layout>
     );
 }
 const mapStateToProps = (state) => ({
-    proveedores: state.proveedores.lista_proveedores,
-    productos: state.productos.lista_productos_proveedor
+    clientes: state.clientes.lista_clientes,
+    productos: state.productos.lista_productos,
+    servicios: state.servicios.lista_servicios
 });
 
 export default connect(mapStateToProps, {
-    get_lista_proveedores,
-    get_lista_productos_proveedor
-})(CreateVentas);
+    get_lista_clientes,
+    get_lista_productos,
+    get_lista_servicios,
+})(CreateVenta);

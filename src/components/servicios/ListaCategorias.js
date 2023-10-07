@@ -18,7 +18,7 @@ const ListaCategorias = ({categorias}) => {
                     categorias && categorias.map((categoria)=>{
                         return categoria.sub_categories.length === 0?
                         <>
-                            <li>
+                            <li key={categoria.id}>
                                 <a
                                     href=""
                                     className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
@@ -28,7 +28,7 @@ const ListaCategorias = ({categorias}) => {
                             </li>
                         </>
                         :<>
-                            <li>
+                            <li key={categoria.id}>
                                 <details className="group [&_summary::-webkit-details-marker]:hidden">
                                     <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
                                         <Link to="/" className="text-sm font-medium"> {categoria.nombre} </Link>
@@ -53,7 +53,7 @@ const ListaCategorias = ({categorias}) => {
                                         {
                                             categoria.sub_categories && categoria.sub_categories.map((subcategoria)=>{
                                             return<>
-                                                <li>
+                                                <li key={subcategoria.id}>
                                                     <a
                                                         href=""
                                                         className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"

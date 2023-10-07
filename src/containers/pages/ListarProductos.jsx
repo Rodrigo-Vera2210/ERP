@@ -20,18 +20,17 @@ function ListarProductos({
 }) {
     useEffect(() => {
         get_lista_productos();
-        get_lista_productos_page();
     }, []);
 
     return (
         <Layout>
-            <section class="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
-                <div class="mb-12 text-left md:text-center">
-                    <h1 class="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
+            <section className="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
+                <div className="mb-12 text-left md:text-center">
+                    <h1 className="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
                         Inventario
                     </h1>
                 </div>
-                <div class="flex flex-col space-y-12 divide-y divide-gray-200">
+                <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                     <ListaProductos
                         productos={productos && productos}
                         get_lista_productos_page={get_lista_productos_page}
@@ -44,9 +43,9 @@ function ListarProductos({
 }
 const mapStateToProps = (state) => ({
     productos: state.productos.lista_productos,
-    count: state.proveedores.count,
-    next: state.proveedores.next,
-    previous: state.proveedores.previous,
+    count: state.productos.count,
+    next: state.productos.next,
+    previous: state.productos.previous,
 });
 
 export default connect(mapStateToProps, {

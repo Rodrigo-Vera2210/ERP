@@ -42,8 +42,11 @@ class ProductoView(APIView):
         if Producto.objects.filter(id=producto).exists():
             productoL = Producto.objects.get(id=producto)
             serializer = ListaProductosSerializer(productoL)
+            print(productoL.id)
             detproveedores = DetalleProductoProveedores.objects.filter(producto_id = productoL.id)
+            # print(detproveedores)
             serializersDet = DetProductoProveedorSerializer(detproveedores, many=True) 
+            print(serializersDet.data)
             listaProveedores = []
             for detproveedor in detproveedores:
                 listaProveedores.append(Proveedor.objects.get(id = detproveedor.proveedor_id))

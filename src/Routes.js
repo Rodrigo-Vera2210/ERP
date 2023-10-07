@@ -1,9 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'
 import Error404 from 'containers/errors/Error404';
-import Home from 'containers/pages/Home';
 
 import { AnimatePresence } from 'framer-motion'
-import CreateOrden from 'containers/pages/CreateOrden';
 import ResetPassword from 'containers/auth/ResetPassword';
 import ResetPasswordConfirm from 'containers/auth/ResetPasswordConfirm';
 import UserView from 'containers/pages/UserView';
@@ -18,6 +16,9 @@ import ComprasView from 'containers/pages/ComprasView';
 import ListarServicios from 'containers/pages/ListarServicios';
 import ListarVentas from 'containers/pages/ListarVentas';
 import ListarClientes from 'containers/pages/ListarClientes';
+import CreateVenta from 'containers/pages/CreateVentas';
+import Home from 'containers/pages/Home';
+import VentasView from 'containers/pages/VentasView';
 
 function AnimatedRoutes(){
 
@@ -32,7 +33,6 @@ function AnimatedRoutes(){
 
             {/* Home Display */}
             <Route path="/" element={<Home />} />
-            <Route path="/ordenes/crear" element={<CreateOrden />} />
             <Route path="/user/view" element={<UserView />} />
             {/* Proveedores Display */}
             <Route path="/proveedores" element={<ListarProveedores />} />
@@ -49,6 +49,8 @@ function AnimatedRoutes(){
             <Route path="/servicios" element={<ListarServicios />} />
             {/* Ventas Display */}
             <Route path="/ventas" element={<ListarVentas />} />
+            <Route path="/ventas/:id" element={<VentasView />} />
+            <Route path="/ventas/crear" element={<CreateVenta />} />
             {/* Clientes Display */}
             <Route path="/clientes" element={<ListarClientes />} />
             

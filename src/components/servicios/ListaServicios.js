@@ -108,16 +108,16 @@ function ListaServicios({ servicios, get_lista_servicios_page, count, categorias
         <div className="overflow-hidden px-8 bg-white">
             <ul
                 role="list"
-                className="space-y-8 gap-8"
+                className="space-y-8 gap-8 mb-10"
             >
                 {servicios &&
                     servicios.map((servicio, index) => (
-                        <div className="border p-4 border-gray-300">
+                        <div key={index} className="border p-4 border-gray-300">
                             <div className="flex justify-between items-center">
-                                <h2 class="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
+                                <h2 className="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
                                     <a
                                         href={`servicios/${servicio.id}`}
-                                        class="text-gray-900 hover:text-amber-500"
+                                        className="text-gray-900 hover:text-amber-500"
                                     >
                                         {servicio.nombre}
                                     </a>

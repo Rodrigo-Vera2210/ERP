@@ -9,7 +9,7 @@ from .serializers import *
 
 class CreateProveedor(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         data = request.data
         proveedor = Proveedor()
         proveedor.nombre = data['nombre']

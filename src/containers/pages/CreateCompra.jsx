@@ -1,8 +1,11 @@
 import Layout from "hocs/layout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { connect } from "react-redux";
 import { get_lista_proveedores } from "redux/actions/proveedores/proveedores";
 import React from "react";
+import {
+    CheckIcon
+} from '@heroicons/react/24/outline'
 import Select from "react-select";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -23,6 +26,8 @@ import {
 } from "@mui/x-data-grid-generator";
 import axios from "axios";
 import { get_lista_productos_proveedor } from "redux/actions/productos/productos";
+import { useNavigate } from "react-router-dom";
+import { Dialog, Transition } from '@headlessui/react'
 
 const initialRows = [
 ];
@@ -65,6 +70,8 @@ function CreateCompra({
     var subtotal, iva, total
     const optionsProveedor = [];
     const optionsProductos = [];
+    const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
     const [rows, setRows] = useState(initialRows);
     const [rowModesModel, setRowModesModel] = useState({});
     const [idProveedor, setIdProveedor] = useState(0)
@@ -291,12 +298,13 @@ function CreateCompra({
         
         const enviarDatos = async() => {
             try {
-                const res = await axios.put(`${process.env.REACT_APP_API_URL}/compras/crear/`, formData, config)
+                const res = await axios.post(`${process.env.REACT_APP_API_URL}/compras/crear/`, formData, config)
             } catch (error) {
                 alert('Error al enviar')
             }
         }
         enviarDatos()
+        setOpen(true)
     };
 
     return (
@@ -313,7 +321,7 @@ function CreateCompra({
                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                             <div className="sm:col-span-2">
                                 <label
-                                    for="nombre"
+                                    htmlFor="nombre"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Nombre
@@ -326,7 +334,7 @@ function CreateCompra({
                             </div>
                             <div className="w-full">
                                 <label
-                                    for="ruc"
+                                    htmlFor="ruc"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Ruc
@@ -343,7 +351,7 @@ function CreateCompra({
                             </div>
                             <div className="w-full">
                                 <label
-                                    for="telefono"
+                                    htmlFor="telefono"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Telefono
@@ -360,7 +368,7 @@ function CreateCompra({
                             </div>
                             <div className="sm:col-span-2">
                                 <label
-                                    for="direccion"
+                                    htmlFor="direccion"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Dirección
@@ -377,7 +385,7 @@ function CreateCompra({
                             </div>
                             <div className="sm:col-span-2">
                                 <label
-                                    for="email"
+                                    htmlFor="email"
                                     className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Email
@@ -451,10 +459,77 @@ function CreateCompra({
                                 <>{calculoTotal()}</>
                             }</p>
                         </div>
+                        <button 
+                            className="h-9 px-4 rounded-lg bg-amber-500 mx-4 my-3 font-bold text-white hover:bg-black "
+                            onClick={e=>onSubmit(e)}
+                        >
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </section>
-            <button onClick={e=>onSubmit(e)}>Imprimir</button>
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                    <div>
+                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                                            <CheckIcon
+                                                className="h-6 w-6 text-green-600"
+                                                aria-hidden="true"
+                                            />
+                                        </div>
+                                        <div className="mt-3 text-center sm:mt-5">
+                                            <Dialog.Title
+                                                as="h3"
+                                                className="text-lg font-medium leading-6 text-gray-900"
+                                            >
+                                                Felicidades
+                                            </Dialog.Title>
+                                            <div className="mt-2">
+                                                <p className="text-sm text-gray-500">
+                                                    La compra ha sido creado con exito!
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 sm:mt-6">
+                                        <button
+                                            type="button"
+                                            className="inline-flex w-full justify-center py-2 px-4 rounded-md border border-transparent font-medium  bg-amber-500 text-black hover:bg-black hover:text-amber-500 sm:text-sm"
+                                            onClick={() => navigate(-1)}
+                                        >
+                                            Aceptar
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
         </Layout>
     );
 }

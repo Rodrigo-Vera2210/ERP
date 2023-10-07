@@ -20,7 +20,7 @@ class ListaClientes(APIView):
 
 class CrearCliente(APIView):
     permission_classes=(permissions.AllowAny,)
-    def put(self,request,format=None):
+    def post(self,request,format=None):
         data = request.data
         cliente = Cliente()
         cliente.nombres = data['nombres']

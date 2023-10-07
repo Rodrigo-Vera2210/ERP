@@ -110,12 +110,12 @@ function ListaClientes({ clientes, get_lista_clientes_page, count }) {
             >
                 {clientes &&
                     clientes.map((cliente, index) => (
-                        <div className="border p-4 border-gray-300">
+                        <div key={index} className="border p-4 border-gray-300">
                             <div className="flex justify-between items-center">
-                                <h2 class="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
+                                <h2 className="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
                                     <a
                                         href={`clientes/${cliente.id}`}
-                                        class="text-gray-900 hover:text-amber-500"
+                                        className="text-gray-900 hover:text-amber-500"
                                     >
                                         {cliente.nombres}
                                     </a>

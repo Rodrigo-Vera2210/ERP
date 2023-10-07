@@ -25,21 +25,20 @@ function ListarServicios({
 }) {
     useEffect(() => {
         get_lista_servicios();
-        get_lista_servicios_page();
         get_lista_categorias();
     }, []);
     return (
         <Layout>
             <div className="flex">
-                <section class="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
+                <section className="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
                     
-                        <div class="mb-12 text-left md:text-center">
-                            <h1 class="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
+                        <div className="mb-12 text-left md:text-center">
+                            <h1 className="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
                                 Lista de servicios
                             </h1>
                             <CrearServicioModal categorias = {categorias && categorias}/>
                         </div>
-                        <div class="flex flex-col space-y-12 divide-y divide-gray-200">
+                        <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                             <ListaServicios
                                 servicios={servicios && servicios}
                                 get_lista_servicios_page={get_lista_servicios_page}

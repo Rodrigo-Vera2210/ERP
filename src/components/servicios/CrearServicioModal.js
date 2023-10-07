@@ -53,7 +53,7 @@ function CrearServicioModal({categorias}) {
 
         const sendData = async () => {
             try {
-                const res = await axios.put(
+                const res = await axios.post(
                     `${process.env.REACT_APP_API_URL}/servicios/crear/`,
                     formData,
                     config
@@ -87,11 +87,11 @@ function CrearServicioModal({categorias}) {
                             Crear Servicio
                         </h2>
                         <form onSubmit={(e) => onSubmit(e)}>
-                            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                                <div class="sm:col-span-2">
+                            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                                <div className="sm:col-span-2">
                                     <label
-                                        for="nombre"
-                                        class="block mb-2 text-sm font-medium text-gray-900 "
+                                        htmlFor="nombre"
+                                        className="block mb-2 text-sm font-medium text-gray-900 "
                                     >
                                         Nombre
                                     </label>
@@ -101,15 +101,15 @@ function CrearServicioModal({categorias}) {
                                         type="text"
                                         name="nombre"
                                         id="nombre"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
                                         placeholder="Escriba el nombre del servicio"
                                         required=""
                                     />
                                 </div>
-                                <div class="sm:col-span-2">
+                                <div className="sm:col-span-2">
                                     <label
-                                        for="precio"
-                                        class="block mb-2 text-sm font-medium text-gray-900 "
+                                        htmlFor="precio"
+                                        className="block mb-2 text-sm font-medium text-gray-900 "
                                     >
                                         Precio
                                     </label>
@@ -119,15 +119,15 @@ function CrearServicioModal({categorias}) {
                                         type="number"
                                         name="precio"
                                         id="precio"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
                                         placeholder="Ingrese el precio"
                                         required=""
                                     />
                                 </div>
-                                <div class="sm:col-span-2">
+                                <div className="sm:col-span-2">
                                     <label
-                                        for="categoria"
-                                        class="block mb-2 text-sm font-medium text-gray-900 "
+                                        htmlFor="categoria"
+                                        className="block mb-2 text-sm font-medium text-gray-900 "
                                     >
                                         Categoria
                                     </label>

@@ -44,7 +44,7 @@ export const get_lista_clientes_page = (page) => async dispatch => {
 
     try{
 
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/clientes?p=${page}`, config)
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/clientes/?p=${page}`, config)
 
         if(res.status === 200){
             dispatch({

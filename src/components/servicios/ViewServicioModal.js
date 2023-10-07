@@ -46,7 +46,7 @@ function ViewServicioModal({ id, get_servicio, servicio, categorias }) {
     }
     cargarCategorias();
     useEffect(() => {
-        get_servicio(idServicio);
+        idServicio!==0&&get_servicio(idServicio);
     }, [get_servicio, idServicio]);
 
     const onChange = (e) => {
@@ -63,9 +63,6 @@ function ViewServicioModal({ id, get_servicio, servicio, categorias }) {
                 Authorization: `JWT ${localStorage.getItem("access")}`,
             },
         };
-        console.log(nombre);
-        console.log(categoria);
-        console.log(precio);
         const formData = new FormData();
         formData.append("nombre", nombre);
         formData.append("categoria", categoria);

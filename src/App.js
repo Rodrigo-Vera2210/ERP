@@ -6,10 +6,10 @@ import AnimatedRoutes from 'Routes';
 function App() {
   return (
     <Provider store={store}>
-        <Router>
-            <AnimatedRoutes/>
-        </Router>
-      </Provider>
+      <Router>
+          <AnimatedRoutes/>
+      </Router>
+    </Provider>
   );
 }
 

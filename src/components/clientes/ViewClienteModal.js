@@ -25,7 +25,7 @@ function ViewClienteModal({ id, get_cliente, cliente }) {
     const [updateEmail, setUpdateEmail] = useState(false);
 
     useEffect(() => {
-        get_cliente(idCliente);
+        idCliente!==0&&get_cliente(idCliente);
     }, [get_cliente, idCliente]);
 
     const onChange = (e) => {

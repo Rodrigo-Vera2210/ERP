@@ -11,7 +11,6 @@ function ListaProductos({ productos, get_lista_productos_page, count }) {
     const [openDelete, setOpenDelete] = useState(false)
 
     function ModalDelete(idProd) {
-        console.log(idProd.idProducto);
         const navigate = useNavigate()
         const onSubmitDelete = (e) =>{
             e.preventDefault()
@@ -107,16 +106,16 @@ function ListaProductos({ productos, get_lista_productos_page, count }) {
         <div className="overflow-hidden px-8 bg-white">
             <ul
                 role="list"
-                className="space-y-8 gap-8"
+                className="space-y-8 gap-8 mb-5"
             >
                 {productos &&
                     productos.map((producto, index) => (
-                        <div className="border p-4 border-gray-300">
+                        <div key={index} className="border p-4 border-gray-300">
                             <div className="flex justify-between items-center">
-                                <h2 class="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
+                                <h2 className="mb-2 text-xl font-extrabold leading-snug tracking-tight text-gray-800 md:text-3xl">
                                     <a
                                         href={`productos/${producto.id}`}
-                                        class="text-gray-900 hover:text-amber-500"
+                                        className="text-gray-900 hover:text-amber-500"
                                     >
                                         {producto.nombre}
                                     </a>
@@ -149,7 +148,7 @@ function ListaProductos({ productos, get_lista_productos_page, count }) {
                                 </div>
                             </div>
                             <div className="text-end">
-                                <Link to={`../productos/${producto.id}`} class=" bg-green-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-green-500">
+                                <Link to={`../productos/${producto.id}`} className=" bg-green-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-green-500">
                                     Detalle
                                 </Link>
                                 <button
@@ -165,7 +164,8 @@ function ListaProductos({ productos, get_lista_productos_page, count }) {
                         </div>
                     ))}
             </ul>
-            <SmallSetPagination
+            <SmallSetPagination 
+                className = "mt-10"
                 list_page={get_lista_productos_page}
                 list={productos}
                 count={count}

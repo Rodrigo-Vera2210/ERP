@@ -36,9 +36,10 @@ function Layout({
         navigate('/')
     }
 
-    if (!isAuthenticated){
-        navigate('/')
-    }
+    useEffect(()=>{
+        !isAuthenticated&&navigate('/')
+    },[navigate,isAuthenticated])
+    
     
     return (
         <>
@@ -100,7 +101,7 @@ function Layout({
                                     <div className="flex min-h-0 flex-1 flex-col  shadow-card  bg-white">
                                         <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
                                             <div className="flex flex-shrink-0 items-center px-4">
-                                                <Link to="/ordenes/crear/" className="ml-4 mt-2">
+                                                <Link to="/" className="ml-4 mt-2">
                                                     <img
                                                         src={foto_p}
                                                         width={240}
@@ -153,7 +154,7 @@ function Layout({
                     <div className="flex min-h-0 flex-1 flex-col  shadow-card  bg-white">
                         <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
                             <div className="flex flex-shrink-0 items-center px-4">
-                                <Link to="/ordenes/crear/" className="ml-4 mt-2">
+                                <Link to="/" className="ml-4 mt-2">
                                     <img
                                         src={
                                             foto_p

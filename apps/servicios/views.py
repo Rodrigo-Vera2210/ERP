@@ -32,7 +32,7 @@ class ListaCategorias(APIView):
 
 class CrearCategoria(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         categoria = Categoria()
         data = request.data
         categoria.nombre = data['nombre']
@@ -54,7 +54,7 @@ class EliminarCategoria(APIView):
 
 class CrearServicio(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         servicio = Servicio()
         data = request.data
         servicio.nombre = data['nombre']

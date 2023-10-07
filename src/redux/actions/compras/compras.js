@@ -44,7 +44,7 @@ export const get_lista_compras_page = (page) => async dispatch => {
 
     try{
 
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/compras?p=${page}`, config)
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/compras/?p=${page}`, config)
 
         if(res.status === 200){
             dispatch({

@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,14 +9,30 @@ from .pagination import *
 
 class CrearVenta(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         venta = Venta()
-        # data = request.data
-        # servicio.nombre = data['nombre']
-        # servicio.precio = float(data['precio'])
-        # categoria = Categoria.objects.get(id = int(data['categoria']))
-        # servicio.categoria = categoria
-        # servicio.save()
+        data = request.data
+        venta.cliente = Cliente.objects.get(id=int(data['cliente']))
+        venta.subtotal = float(data['subtotal'])
+        venta.iva = float(data['iva'])
+        venta.total = float(data['total'])
+        venta.save()
+        for producto in json.loads(data['productos']):
+            detProd = detalleProducto()
+            detProd.producto = Producto.objects.get(id = producto['id'])
+            detProd.cantidad = producto["cantidad"]
+            detProd.precio = float(producto['precio'])
+            detProd.subtotal = producto['subtotal']
+            detProd.venta = venta
+            detProd.save()
+        for servicio in json.loads(data['servicios']):
+            detSer = DetalleServicio()
+            detSer.servicio = Servicio.objects.get(id = servicio['id'])
+            detSer.cantidad = servicio["cantidad"]
+            detSer.precio = float(servicio['precio'])
+            detSer.subtotal = servicio['subtotal']
+            detSer.venta = venta
+            detSer.save()
         return Response({'success':'Servicio creado con exito'}, status=status.HTTP_200_OK)
 
 class EditarVenta(APIView):
@@ -23,15 +40,44 @@ class EditarVenta(APIView):
     def put(self, request, venta, format=None):
         if Venta.objects.filter(id = venta).exists():
             data = request.data
-            result = Venta.objects.get(id = venta)
-            # if data['nombre'] != '':
-            #     result.nombre = data['nombre']
-            # if data['categoria'] != '':
-            #     categoria = Categoria.objects.get(id = int(data['categoria'])) 
-            #     result.nombre = categoria
-            # if data['precio'] != '':
-            #     result.precio = float(data['precio'])
-            # result.save()
+            print(data)
+            if(data['aprobar']=='false'):
+                venta = Venta.objects.get(id = venta)
+                venta.subtotal = float(data['subtotal'])
+                venta.iva = float(data['iva'])
+                venta.total = float(data['total'])
+                venta.save()
+                detalleP = detalleProducto.objects.filter(venta_id = venta)
+                detalleS = DetalleServicio.objects.filter(venta_id = venta)
+                for detalle in detalleP:
+                    detalle.delete()
+                for detalle in detalleS:
+                    detalle.delete()
+                for producto in json.loads(data['productos']):
+                    detProd = detalleProducto()
+                    detProd.producto = Producto.objects.get(id = producto['id'])
+                    detProd.cantidad = producto["cantidad"]
+                    detProd.precio = float(producto['precio'])
+                    detProd.subtotal = producto['subtotal']
+                    detProd.venta = venta
+                    detProd.save()
+                for servicio in json.loads(data['servicios']):
+                    detSer = DetalleServicio()
+                    detSer.servicio = Servicio.objects.get(id = servicio['id'])
+                    detSer.cantidad = servicio["cantidad"]
+                    detSer.precio = float(servicio['precio'])
+                    detSer.subtotal = servicio['subtotal']
+                    detSer.venta = venta
+                    detSer.save()
+            elif(data['aprobar']=='true'):
+                venta = Venta.objects.get(id = venta)
+                venta.aprobacion = True
+                venta.save()
+                for producto in json.loads(data['productos']):
+                    Prod = Producto.objects.get(id=producto['id'])
+                    Prod.producto = Producto.objects.get(id = producto['id'])
+                    Prod.cantidad_total -= int(producto["cantidad"])
+                    Prod.save()
             return Response({'success':'Servicio editado con exito'}, status=status.HTTP_200_OK)
         else:
             return Response({'error':'No existe el servicio'},status=status.HTTP_404_NOT_FOUND)
@@ -59,11 +105,15 @@ class ListaVenta(APIView):
 
 class VistaVenta(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, venta, format=None):
+    def get(self, request, venta, format=None):
         if Venta.objects.filter(id = venta).exists():
             result = Venta.objects.get(id = venta)
+            detallesP = detalleProducto.objects.filter(venta_id = result.id)
+            detallesS = DetalleServicio.objects.filter(venta_id = result.id)
             serializer = VentaSerializer(result)
-            return Response({'venta':serializer.data}, status=status.HTTP_200_OK)
+            serializerP = VentaProductoSerializer(detallesP, many=True) 
+            serializerS = VentaServicioSerializer(detallesS, many=True)
+            return Response({'venta':serializer.data, 'detalleP':serializerP.data, 'detalleS':serializerS.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error':'No existe el venta'},status=status.HTTP_404_NOT_FOUND)
 

@@ -43,7 +43,7 @@ function CrearCategoriasModal({categorias}) {
 
         const sendData = async () => {
             try {
-                const res = await axios.put(
+                const res = await axios.post(
                     `${process.env.REACT_APP_API_URL}/servicios/categorias/crear/`,
                     formData,
                     config
@@ -77,11 +77,11 @@ function CrearCategoriasModal({categorias}) {
                             Crear Categoría
                         </h2>
                         <form onSubmit={(e) => onSubmit(e)}>
-                            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                                <div class="sm:col-span-2">
+                            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                                <div className="sm:col-span-2">
                                     <label
-                                        for="nombre"
-                                        class="block mb-2 text-sm font-medium text-gray-900 "
+                                        htmlFor="nombre"
+                                        className="block mb-2 text-sm font-medium text-gray-900 "
                                     >
                                         Nombre
                                     </label>
@@ -91,15 +91,15 @@ function CrearCategoriasModal({categorias}) {
                                         type="text"
                                         name="nombre"
                                         id="nombre"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5 "
                                         placeholder="Escriba el nombre de la categoría"
                                         required=""
                                     />
                                 </div>
-                                <div class="sm:col-span-2">
+                                <div className="sm:col-span-2">
                                     <label
-                                        for="padre"
-                                        class="block mb-2 text-sm font-medium text-gray-900 "
+                                        htmlFor="padre"
+                                        className="block mb-2 text-sm font-medium text-gray-900 "
                                     >
                                         Categoria Padre
                                     </label>

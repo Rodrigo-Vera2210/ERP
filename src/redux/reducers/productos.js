@@ -24,6 +24,7 @@ export default function productos(state = initialState, action) {
             return {
                 ...state,
                 lista_productos: payload.results.productos,
+                lista_productos_proveedor: null,
                 count: payload.count,
                 next: payload.next,
                 previous: payload.previous,
@@ -31,6 +32,7 @@ export default function productos(state = initialState, action) {
         case GET_LIST_PRODUCTOS_FAIL:
             return {
                 ...state,
+                lista_productos_proveedor: null,
                 count: null,
                 next: null,
                 previous: null,
@@ -51,9 +53,9 @@ export default function productos(state = initialState, action) {
             return {
                 ...state,
                 producto: payload.producto,
-                count: payload.count,
-                next: payload.next,
-                previous: payload.previous,
+                count: null,
+                next: null,
+                previous: null,
                 proveedores: payload.proveedores,
                 detalles: payload.detproveedores,
             }

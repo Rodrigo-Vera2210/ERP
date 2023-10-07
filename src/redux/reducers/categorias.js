@@ -11,7 +11,6 @@ export default function categorias(state = initialState, action) {
     const {type, payload} = action;
     switch (type) {
         case GET_LIST_CATEGORIAS_SUCCESS:
-            console.log(payload);
             return {
                 ...state,
                 lista_categorias: payload.categories,

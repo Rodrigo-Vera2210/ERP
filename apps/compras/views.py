@@ -4,15 +4,14 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .models import *
+from .models import Compra
 from .paginations import *
 from .serializers import *
 
 class CreateCompra(APIView):
     permission_classes = (permissions.AllowAny,)
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         data = request.data
-        print(data)
         compra = Compra()
         proveedor = Proveedor.objects.get(id=int(data['proveedor']))
         compra.proveedor = proveedor
@@ -35,7 +34,6 @@ class CreateCompra(APIView):
                 prod.nombre = producto['nombre']
                 prod.marca = producto['marca']
             prod.cantidad_total = cantidad + int(producto['cantidad'])
-            print(prod.id)
             prod.save()
             detCompra = DetalleCompra()
             detCompra.producto = prod
@@ -68,8 +66,10 @@ class CompraView(APIView):
     def get(self, request, compra, format=None):
         if (Compra.objects.filter(id=compra).exists()):
             result = Compra.objects.get(id=compra)
+            detalles = DetalleCompra.objects.filter(compra_id = result.id)
             serializer = ComprasSerializer(result)
-            return Response({'compra':serializer.data},status=status.HTTP_200_OK)
+            serializerDetalle = DetallesComprasSerializer(detalles, many=True)
+            return Response({'compra':serializer.data, 'detalles':serializerDetalle.data},status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Compra no encontrada'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -77,8 +77,50 @@ class EditCompra(APIView):
     permission_classes=(permissions.AllowAny,)
     def put(self, request, compra, format=None):
         if (Compra.objects.filter(id=compra).exists()):
-            result = Compra.objects.get(id=compra)
+            compra = Compra.objects.get(id=compra)
             data = request.data
+            proveedor = Proveedor.objects.get(id=int(data['proveedor']))
+            compra.subtotal = float(data['subtotal'])
+            compra.iva = float(data['iva'])
+            compra.total = float(data['total'])
+            compra.save()
+            productos = Producto.objects.all()
+            detallesCompra = DetalleCompra.objects.filter(compra_id = compra.id)
+            for detalle in detallesCompra:
+                detalleProducto = DetalleProductoProveedores.objects.filter(proveedor_id = proveedor.id).filter(producto_id = detalle.producto_id)
+                for detalleP in detalleProducto:
+                    detalleP.delete()
+                detalle.delete()
+            for producto in json.loads(data['productos']):
+                aux = 0
+                for oldProduct in productos:
+                    if producto['id'] == oldProduct.id:
+                        prod = Producto.objects.get(id = producto['id'])
+                        aux += 1
+                        break
+                if aux == 0:
+                    prod = Producto()
+                    prod.nombre = producto['nombre']
+                    prod.marca = producto['marca']
+                prod.save()
+                detCompra = DetalleCompra()
+                detCompra.producto = prod
+                detCompra.compra = compra
+                detCompra.cantidad = int(producto['cantidad'])
+                detCompra.subtotal = float(producto['subtotal'])
+                detCompra.save()
+                detProdProv = DetalleProductoProveedores()
+                detProdProv.producto = prod
+                detProdProv.proveedor = proveedor
+                detProdProv.precio_compra = float(producto['precio'])
+                detProdProv.save()
+            for oldProduct in productos:
+                detCompra = DetalleCompra.objects.filter(producto_id=oldProduct.id)
+                cantidad = 0
+                for detalle in detCompra:
+                    cantidad = cantidad + int(detalle.cantidad)
+                oldProduct.cantidad_total = cantidad
+                oldProduct.save()
             return Response({'success':'Compra editada con exito'},status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Compra no encontrada'}, status=status.HTTP_404_NOT_FOUND)

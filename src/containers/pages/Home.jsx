@@ -38,7 +38,7 @@ function Home({
     }
 
     if(isAuthenticated){
-        return <Navigate to='/ordenes/crear'/>
+        return <Navigate to='/ventas/crear'/>
     }
 
     return (

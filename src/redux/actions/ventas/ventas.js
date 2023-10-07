@@ -44,7 +44,7 @@ export const get_lista_ventas_page = (page) => async dispatch => {
 
     try{
 
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/ventas?p=${page}`, config)
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/ventas/?p=${page}`, config)
 
         if(res.status === 200){
             dispatch({
@@ -71,7 +71,7 @@ export const get_venta = (id) => async dispatch => {
         }
     };
     try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/ventas/view/${id}`, config)
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/ventas/vista/${id}`, config)
         if (res.status === 200) {
             dispatch({
                 type: GET_VENTA_SUCCESS,

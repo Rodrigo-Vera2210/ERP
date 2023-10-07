@@ -19,14 +19,13 @@ function ListarProveedores({
 }) {
     useEffect(() => {
         get_lista_proveedores();
-        get_lista_proveedores_page();
     }, []);
 
     return (
         <Layout>
-            <section class="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
-                <div class="mb-12 text-left md:text-center">
-                    <h1 class="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
+            <section className="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
+                <div className="mb-12 text-left md:text-center">
+                    <h1 className="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
                         Lista de proveedores
                     </h1>
                     <Link
@@ -36,7 +35,7 @@ function ListarProveedores({
                         Añadir proveedor
                     </Link>
                 </div>
-                <div class="flex flex-col space-y-12 divide-y divide-gray-200">
+                <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                     <ListaProveedores
                         posts={proveedores && proveedores}
                         get_lista_proveedores_page={get_lista_proveedores_page}

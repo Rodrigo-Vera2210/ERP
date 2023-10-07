@@ -21,19 +21,18 @@ function ListarClientes({
 }) {
     useEffect(() => {
         get_lista_clientes();
-        get_lista_clientes_page();
     }, []);
 
     return (
         <Layout>
-            <section class="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
-                <div class="mb-12 text-left md:text-center">
-                    <h1 class="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
+            <section className="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
+                <div className="mb-12 text-left md:text-center">
+                    <h1 className="mb-3 text-5xl font-extrabold leading-tight text-amber-500">
                         Listado de Clientes
                     </h1>
                     <CrearClienteModal/>
                 </div>
-                <div class="flex flex-col space-y-12 divide-y divide-gray-200">
+                <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                     <ListaClientes
                         clientes={clientes && clientes}
                         get_lista_clientes_page={get_lista_clientes_page}

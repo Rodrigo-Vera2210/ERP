@@ -36,11 +36,9 @@ function SmallSetPagination({list_page, list, count}){
     const getNumbers = () => {
         let itemsPerPage = listingsPerPage;
         let pageNumber = 1;
-
         for (let i = 0; i < count; i += itemsPerPage) {
             const page = pageNumber;
             let content = null;
-
             if (active === page) {
                 content = (
                     <div key={i} className={`hidden md:-mt-px md:flex`}>
@@ -53,7 +51,7 @@ function SmallSetPagination({list_page, list, count}){
             else {
                 content = (
                     <div key={i} onClick={() => {
-                      visitPage(page)
+                      page&&visitPage(page)
                       }} className={`hidden md:-mt-px md:flex`}>
                       <div className="cursor-pointer border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium">
                         {pageNumber}
