@@ -6,8 +6,10 @@ import {
     get_lista_categorias,
     get_lista_servicios,
     get_lista_servicios_page,
+    search_servicios,
+    search_servicios_page
 } from "redux/actions/servicios/servicios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ListaServicios from "components/servicios/ListaServicios";
 import CrearServicioModal from "components/servicios/CrearServicioModal";
 import ListaCategorias from "components/servicios/ListaCategorias";
@@ -15,7 +17,7 @@ import { TERipple } from 'tw-elements-react';
 import HeaderServicios from "components/servicios/HeaderServicios";
 
 
-function ListarServicios({
+function SearchServicios({
     servicios,
     categorias,
     count,
@@ -24,24 +26,30 @@ function ListarServicios({
     get_lista_servicios,
     get_lista_servicios_page,
     get_lista_categorias,
+    search_servicios,
+    search_servicios_page
 }) {
     useEffect(() => {
-        get_lista_servicios();
-        get_lista_categorias();
+        search_servicios(term)
     }, []);
+
+    
+    const params = useParams()
+    const term = params.term
+
     return (
         <Layout>
             <div className="flex">
                 <section className="w-full px-4 py-24 mx-auto max-w-7xl md:w-3/4 lg:w-2/4">
-                        <HeaderServicios categorias={categorias && categorias}/>
-                        <div className="flex flex-col space-y-12 divide-y divide-gray-200">
-                            <ListaServicios
-                                servicios={servicios && servicios}
-                                get_lista_servicios_page={get_lista_servicios_page}
-                                count={count && count}
-                                categorias={categorias && categorias}
-                            />
-                        </div>
+                    <HeaderServicios categorias={categorias&&categorias}/>
+                    <div className="flex flex-col space-y-12 divide-y divide-gray-200">
+                        <ListaServicios
+                            servicios={servicios && servicios}
+                            get_lista_servicios_page={get_lista_servicios_page}
+                            count={count && count}
+                            categorias={categorias && categorias}
+                        />
+                    </div>
                 </section>
                 <section className="py-60 max-w-sm w-full">
                     <ListaCategorias categorias = {categorias && categorias}/>
@@ -51,7 +59,7 @@ function ListarServicios({
     );
 }
 const mapStateToProps = (state) => ({
-    servicios: state.servicios.lista_servicios,
+    servicios: state.servicios.servicios_filtrados,
     categorias: state.categorias.lista_categorias,
     count: state.proveedores.count,
     next: state.proveedores.next,
@@ -62,4 +70,6 @@ export default connect(mapStateToProps, {
     get_lista_servicios,
     get_lista_servicios_page,
     get_lista_categorias,
-})(ListarServicios);
+    search_servicios,
+    search_servicios_page
+})(SearchServicios);

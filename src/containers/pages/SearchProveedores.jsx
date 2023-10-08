@@ -3,23 +3,28 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
     get_lista_proveedores,
-    get_lista_proveedores_page,
+    search_proveedores_page,
+    search_proveedores,
 } from "redux/actions/proveedores/proveedores";
 import ListaProveedores from "components/proveedores/ListaProveedores";
+import {useParams } from "react-router-dom";
 import HeaderProveedores from "components/proveedores/HeaderProveedores";
 
 
-function ListarProveedores({
+function SearchProveedores({
     proveedores,
+    search_proveedores,
     count,
     next,
     previous,
-    get_lista_proveedores,
-    get_lista_proveedores_page,
+    search_proveedores_page,
 }) {
     useEffect(() => {
-        get_lista_proveedores();
+        search_proveedores(term);
     }, []);
+    
+    const params = useParams()
+    const term = params.term
 
     return (
         <Layout>
@@ -28,7 +33,7 @@ function ListarProveedores({
                 <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                     <ListaProveedores
                         posts={proveedores && proveedores}
-                        get_lista_proveedores_page={get_lista_proveedores_page}
+                        get_lista_proveedores_page={search_proveedores_page}
                         count={count && count}
                     />
                 </div>
@@ -37,7 +42,7 @@ function ListarProveedores({
     );
 }
 const mapStateToProps = (state) => ({
-    proveedores: state.proveedores.lista_proveedores,
+    proveedores: state.proveedores.proveedores_filtrados,
     count: state.proveedores.count,
     next: state.proveedores.next,
     previous: state.proveedores.previous,
@@ -45,5 +50,6 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     get_lista_proveedores,
-    get_lista_proveedores_page,
-})(ListarProveedores);
+    search_proveedores,
+    search_proveedores_page,
+})(SearchProveedores);

@@ -3,6 +3,8 @@ import {
     GET_LIST_PROVEEDORES_FAIL,
     GET_PROVEEDOR_SUCCESS,
     GET_PROVEEDOR_FAIL,
+    GET_SEARCH_PROVEEDOR_SUCCESS,
+    GET_SEARCH_PROVEEDOR_FAIL,
 } from './types'
 import axios from 'axios'
 
@@ -90,5 +92,63 @@ export const get_proveedor = (id) => async dispatch =>{
             payload: ''
         })
         
+    }
+}
+
+export const search_proveedores = (search_term) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+        }
+    };
+
+    try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/proveedores/buscar/?s=${search_term}`, config)
+        if(res.status === 200){
+            dispatch({
+                type: GET_SEARCH_PROVEEDOR_SUCCESS,
+                payload: res.data
+            })
+        }else{
+            dispatch({
+                type: GET_SEARCH_PROVEEDOR_FAIL,
+                payload: ''
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: GET_SEARCH_PROVEEDOR_FAIL,
+            payload: ''
+        })
+        
+    }
+}
+
+export const search_proveedores_page = (search_term,page) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try{
+
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/proveedores/buscar/?p=${page}&?s=${search_term}`, config)
+
+        if(res.status === 200){
+            dispatch({
+                type: GET_SEARCH_PROVEEDOR_SUCCESS,
+                payload: res.data
+            });
+        }else{
+            dispatch({
+                type: GET_SEARCH_PROVEEDOR_FAIL
+            });
+        }
+
+    }catch(err){
+        dispatch({
+            type: GET_SEARCH_PROVEEDOR_FAIL
+        });
     }
 }

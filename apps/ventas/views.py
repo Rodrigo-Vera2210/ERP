@@ -117,3 +117,20 @@ class VistaVenta(APIView):
         else:
             return Response({'error':'No existe el venta'},status=status.HTTP_404_NOT_FOUND)
 
+class SearchVentaView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        print(search_term)
+        matches = Venta.objects.filter(
+            Q(nombre__icontains=search_term) |
+            Q(ruc__icontains=search_term) |
+            Q(direccion__icontains=search_term)
+        )
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        serializer = VentaSerializer(results, many=True)
+        
+        return paginator.get_paginated_response({'proveedores_filtrados': serializer.data})
+    

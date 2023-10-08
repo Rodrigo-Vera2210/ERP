@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     path('',ListaServicio.as_view()),
     path('crear/',CrearServicio.as_view()),
+    path('buscar/',SearchServicioView.as_view()),
     path('editar/<servicio>',EditarServicio.as_view()),
     path('eliminar/<servicio>',EliminarServicio.as_view()),
     path('vista/<servicio>',VistaServicio.as_view()),

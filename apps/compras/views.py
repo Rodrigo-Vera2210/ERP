@@ -7,6 +7,7 @@ from rest_framework import status
 from .models import Compra
 from .paginations import *
 from .serializers import *
+from django.db.models.query_utils import Q
 
 class CreateCompra(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -133,3 +134,23 @@ class DeleteCompra(APIView):
             return Response({'success':'Compra eliminada con exito'},status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Compra no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+
+class SearchCompraView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        proveedors = Proveedor.objects.filter(
+            Q(nombre__icontains=search_term) 
+        )
+        print(proveedors)
+        result = []
+        for provee in proveedors:
+            matches= Compra.objects.filter(proveedor = provee)
+            for match in matches:
+                result.append(match)
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(result, request)
+        serializer = ComprasSerializer(results, many=True)
+        print(serializer.data)
+        return paginator.get_paginated_response({'compras_filtradas': serializer.data})
+    

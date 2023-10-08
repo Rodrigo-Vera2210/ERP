@@ -5,6 +5,8 @@ import {
     GET_LIST_PRODUCTOS_PROVEEDOR_FAIL,
     GET_PRODUCTO_SUCCESS,
     GET_PRODUCTO_FAIL,
+    SEARCH_PRODUCTO_SUCCESS,
+    SEARCH_PRODUCTO_FAIL,
 } from './types'
 import axios from 'axios'
 
@@ -62,6 +64,64 @@ export const get_lista_productos_page = (page) => async dispatch => {
     }catch(err){
         dispatch({
             type: GET_LIST_PRODUCTOS_FAIL
+        });
+    }
+}
+
+export const search_productos = (term) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+        }
+    };
+
+    try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/productos/buscar/?s=${term}`, config)
+        if(res.status === 200){
+            dispatch({
+                type: SEARCH_PRODUCTO_SUCCESS,
+                payload: res.data
+            })
+        }else{
+            dispatch({
+                type: SEARCH_PRODUCTO_FAIL,
+                payload: ''
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: SEARCH_PRODUCTO_FAIL,
+            payload: ''
+        })
+        
+    }
+}
+
+export const search_productos_page = (term,page) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try{
+
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/productos/buscar/?p=${page}&?s=${term}`, config)
+
+        if(res.status === 200){
+            dispatch({
+                type: SEARCH_PRODUCTO_SUCCESS,
+                payload: res.data
+            });
+        }else{
+            dispatch({
+                type: SEARCH_PRODUCTO_FAIL
+            });
+        }
+
+    }catch(err){
+        dispatch({
+            type: SEARCH_PRODUCTO_FAIL
         });
     }
 }

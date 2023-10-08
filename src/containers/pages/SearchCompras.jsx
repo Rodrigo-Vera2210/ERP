@@ -5,30 +5,34 @@ import axios from "axios";
 import {
     get_lista_compras,
     get_lista_compras_page,
+    search_compras,
 } from "redux/actions/compras/compras";
 import {
     get_lista_proveedores,
 } from "redux/actions/proveedores/proveedores";
 import ListaCompras from "components/compras/ListaCompras";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { TERipple } from 'tw-elements-react';
 import HeaderCompras from "components/compras/HeaderCompras";
 
 
-function ListarCompras({
+function SearchCompras({
     proveedores,
     compras,
     count,
     next,
     previous,
-    get_lista_compras,
+    search_compras,
     get_lista_compras_page,
     get_lista_proveedores,
 }) {
     useEffect(() => {
+        search_compras(term);
         get_lista_proveedores();
-        get_lista_compras();
     }, []);
+
+    const params = useParams()
+    const term = params.term
 
     return (
         <Layout>
@@ -48,7 +52,7 @@ function ListarCompras({
 }
 const mapStateToProps = (state) => ({
     proveedores: state.proveedores.lista_proveedores,
-    compras: state.compras.lista_compras,
+    compras: state.compras.compras_filtradas,
     count: state.compras.count,
     next: state.compras.next,
     previous: state.compras.previous,
@@ -56,6 +60,6 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     get_lista_proveedores,
-    get_lista_compras,
+    search_compras,
     get_lista_compras_page,
-})(ListarCompras);
+})(SearchCompras);

@@ -54,10 +54,10 @@ function ListaProveedores({ posts, get_lista_proveedores_page, count }) {
                                 </div>
                             </div>
                             <div className="text-end">
-                                <Link to={`../proveedores/${proveedor.id}`} className=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold hover:bg-black hover:text-amber-500">
+                                <Link to={`../proveedores/${proveedor.id}`} className=" bg-amber-500 px-4 py-2 mr-3 rounded-lg font-bold text-white hover:bg-black hover:text-amber-500">
                                     Detalle
                                 </Link>
-                                <button className="bg-red-600 px-4 h-9 rounded-lg font-bold hover:bg-black hover:text-red-600">
+                                <button className="bg-red-600 px-4 h-9 rounded-lg font-bold text-white hover:bg-black hover:text-red-600">
                                     Eliminar
                                 </button>
                             </div>

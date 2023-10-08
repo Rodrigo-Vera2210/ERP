@@ -56,7 +56,7 @@ function CrearClienteModal() {
     return (
         <>
             <button
-                className="bg-amber-500 px-4 py-2 rounded-xl text-white hover:bg-black hover:ring-amber-500 focus:bg-black focus:ring-amber-500"
+                className="bg-amber-500 mx-3 px-4 py-2 rounded-xl text-white hover:bg-black hover:ring-amber-500 focus:bg-black focus:ring-amber-500"
                 onClick={() => props.setOpenModal("form-elements")}
             >
                 Crear Cliente

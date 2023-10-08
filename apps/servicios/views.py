@@ -5,6 +5,7 @@ from rest_framework import permissions, status
 from .models import *
 from .serializers import *
 from .pagination import *
+from django.db.models.query_utils import Q
 
 class ListaCategorias(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -113,3 +114,22 @@ class VistaServicio(APIView):
             return Response({'servicio':serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error':'No existe el servicio'},status=status.HTTP_404_NOT_FOUND)
+
+class SearchServicioView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        search_term_category = request.query_params.get('c')
+        if(search_term!=None):
+            matches = Servicio.objects.filter(
+                Q(nombre__icontains=search_term)
+            )
+        if(search_term_category!=None):
+            matches = Servicio.objects.filter(categoria_id = int(search_term_category))
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        serializer = ServicioSerializer(results, many=True)
+        
+        return paginator.get_paginated_response({'servicios_filtrados': serializer.data})
+    

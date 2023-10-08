@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import ListaVentas from "components/ventas/ListaVentas";
 import { TERipple } from 'tw-elements-react';
 
-function ListarVentas({
+function SearchVentas({
     proveedores,
     ventas,
     count,
@@ -89,4 +89,4 @@ export default connect(mapStateToProps, {
     get_lista_proveedores,
     get_lista_ventas,
     get_lista_ventas_page,
-})(ListarVentas);
+})(SearchVentas);

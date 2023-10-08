@@ -3,10 +3,13 @@ import {
     GET_LIST_PROVEEDORES_FAIL,
     GET_PROVEEDOR_SUCCESS,
     GET_PROVEEDOR_FAIL,
+    GET_SEARCH_PROVEEDOR_SUCCESS,
+    GET_SEARCH_PROVEEDOR_FAIL,
 } from '../actions/proveedores/types'
 
 const initialState = {
     lista_proveedores: null,
+    proveedores_filtrados: null,
     proveedor: null,
     count:null,
     next:null,
@@ -25,6 +28,21 @@ export default function proveedores(state = initialState, action) {
                 previous: payload.previous,
             }
         case GET_LIST_PROVEEDORES_FAIL:
+            return {
+                ...state,
+                count: null,
+                next: null,
+                previous: null,
+            }
+        case GET_SEARCH_PROVEEDOR_SUCCESS:
+            return {
+                ...state,
+                proveedores_filtrados: payload.results.proveedores_filtrados,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
+            }
+        case GET_SEARCH_PROVEEDOR_FAIL:
             return {
                 ...state,
                 count: null,

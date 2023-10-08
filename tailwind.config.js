@@ -2,7 +2,8 @@
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
+    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    "./node_modules/tw-elements-react/dist/js/**/*.js"
   ],
   theme: {
     extend: {
@@ -47,5 +48,6 @@ module.exports = {
       require("@tailwindcss/line-clamp"),
       require("@tailwindcss/aspect-ratio"),
       require('flowbite/plugin'),
+      require("tw-elements-react/dist/plugin.cjs")
   ],
 }

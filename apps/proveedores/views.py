@@ -6,6 +6,7 @@ from rest_framework import status
 from .models import *
 from .pagination import *
 from .serializers import *
+from django.db.models.query_utils import Q
 
 class CreateProveedor(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -72,3 +73,21 @@ class ProveedorDelete(APIView):
             return Response({'success':'Eliminado con exito'})
         else:
             return Response({'error':'Proveedor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+class SearchProveedorView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        print(search_term)
+        matches = Proveedor.objects.filter(
+            Q(nombre__icontains=search_term) |
+            Q(ruc__icontains=search_term) |
+            Q(direccion__icontains=search_term)
+        )
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        serializer = ListaProveedoresSerializer(results, many=True)
+        
+        return paginator.get_paginated_response({'proveedores_filtrados': serializer.data})
+    

@@ -5,11 +5,14 @@ import {
     GET_LIST_PRODUCTOS_PROVEEDOR_FAIL,
     GET_PRODUCTO_SUCCESS,
     GET_PRODUCTO_FAIL,
+    SEARCH_PRODUCTO_SUCCESS,
+    SEARCH_PRODUCTO_FAIL,
 } from '../actions/productos/types'
 
 const initialState = {
     lista_productos: null,
     lista_productos_proveedor: null,
+    productos_filtrados: null,
     producto: null,
     proveedores: null,
     count:null,
@@ -30,6 +33,23 @@ export default function productos(state = initialState, action) {
                 previous: payload.previous,
             }
         case GET_LIST_PRODUCTOS_FAIL:
+            return {
+                ...state,
+                lista_productos_proveedor: null,
+                count: null,
+                next: null,
+                previous: null,
+            }
+        case SEARCH_PRODUCTO_SUCCESS:
+            return {
+                ...state,
+                productos_filtrados: payload.results.productos_filtrados,
+                lista_productos_proveedor: null,
+                count: payload.count,
+                next: payload.next,
+                previous: payload.previous,
+            }
+        case SEARCH_PRODUCTO_FAIL:
             return {
                 ...state,
                 lista_productos_proveedor: null,

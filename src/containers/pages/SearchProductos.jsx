@@ -3,26 +3,28 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
 import {
-    get_lista_productos,
-    get_lista_productos_page,
+    search_productos,
+    search_productos_page
 } from "redux/actions/productos/productos";
 import ListaProductos from "components/productos/ListaProductos";
-import { Link } from "react-router-dom";
-import { TERipple } from 'tw-elements-react';
+import { Link, useParams } from "react-router-dom";
 import HeaderProductos from "components/productos/HeaderProductos";
 
 
-function ListarProductos({
+function SearchProductos({
     productos,
     count,
     next,
     previous,
-    get_lista_productos,
-    get_lista_productos_page,
+    search_productos,
+    search_productos_page
 }) {
     useEffect(() => {
-        get_lista_productos();
+        search_productos(term);
     }, []);
+
+    const params = useParams()
+    const term = params.term
 
     return (
         <Layout>
@@ -31,7 +33,7 @@ function ListarProductos({
                 <div className="flex flex-col space-y-12 divide-y divide-gray-200">
                     <ListaProductos
                         productos={productos && productos}
-                        get_lista_productos_page={get_lista_productos_page}
+                        get_lista_productos_page={search_productos_page}
                         count={count && count}
                     />
                 </div>
@@ -40,13 +42,13 @@ function ListarProductos({
     );
 }
 const mapStateToProps = (state) => ({
-    productos: state.productos.lista_productos,
+    productos: state.productos.productos_filtrados,
     count: state.productos.count,
     next: state.productos.next,
     previous: state.productos.previous,
 });
 
 export default connect(mapStateToProps, {
-    get_lista_productos,
-    get_lista_productos_page,
-})(ListarProductos);
+    search_productos,
+    search_productos_page
+})(SearchProductos);

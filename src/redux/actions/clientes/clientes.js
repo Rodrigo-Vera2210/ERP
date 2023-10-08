@@ -3,6 +3,8 @@ import {
     GET_LIST_CLIENTES_FAIL,
     GET_CLIENTE_SUCCESS,
     GET_CLIENTE_FAIL,
+    GET_SEARCH_CLIENTE_SUCCESS,
+    GET_SEARCH_CLIENTE_FAIL,
 } from './types'
 import axios from 'axios'
 
@@ -60,6 +62,65 @@ export const get_lista_clientes_page = (page) => async dispatch => {
     }catch(err){
         dispatch({
             type: GET_LIST_CLIENTES_FAIL
+        });
+    }
+}
+
+export const search_clientes = (term) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json',
+        }
+    };
+
+    try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/clientes/buscar/?s=${term}`, config)
+        console.log(res);
+        if(res.status === 200){
+            dispatch({
+                type: GET_SEARCH_CLIENTE_SUCCESS,
+                payload: res.data
+            })
+        }else{
+            dispatch({
+                type: GET_SEARCH_CLIENTE_FAIL,
+                payload: ''
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: GET_SEARCH_CLIENTE_FAIL,
+            payload: ''
+        })
+        
+    }
+}
+
+export const search_clientes_page = (term,page) => async dispatch => {
+    const config = {
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
+
+    try{
+
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/clientes/buscar/?p=${page}&?s=${term}`, config)
+
+        if(res.status === 200){
+            dispatch({
+                type: GET_SEARCH_CLIENTE_SUCCESS,
+                payload: res.data
+            });
+        }else{
+            dispatch({
+                type: GET_SEARCH_CLIENTE_FAIL
+            });
+        }
+
+    }catch(err){
+        dispatch({
+            type: GET_SEARCH_CLIENTE_FAIL
         });
     }
 }

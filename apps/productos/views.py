@@ -7,6 +7,7 @@ from .models import *
 from .paginations import *
 from .serializers import *
 from apps.proveedores.serializers import *
+from django.db.models.query_utils import Q
 
 class ListaProductos(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -75,3 +76,19 @@ class DeleteProductoView(APIView):
         producto = Producto.objects.get(id=producto)
         producto.delete()
         return Response({'success': 'Producto deleted'})
+
+class SearchProductoView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        matches = Producto.objects.filter(
+            Q(nombre__icontains=search_term) |
+            Q(marca__icontains=search_term) 
+        )
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        serializer = ListaProductosSerializer(results, many=True)
+        
+        return paginator.get_paginated_response({'productos_filtrados': serializer.data})
+    

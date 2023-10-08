@@ -5,6 +5,7 @@ from rest_framework import permissions, status
 from .models import *
 from .serializers import *
 from .pagination import *
+from django.db.models.query_utils import Q
 
 class ListaClientes(APIView):
     permission_classes=(permissions.AllowAny,)
@@ -71,4 +72,18 @@ class EliminarCliente(APIView):
         else:
             return Response({'error':'No existe cliente'},status=status.HTTP_404_NOT_FOUND)
 
+class SearchClienteView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self,request, format=None):
+        search_term = request.query_params.get('s')
+        matches = Cliente.objects.filter(
+            Q(nombres__icontains=search_term) |
+            Q(c_id__icontains=search_term) |
+            Q(direccion__icontains=search_term)
+        )
+        paginator = SmallSetPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        serializer = ClienteSerializer(results, many=True)
         
+        return paginator.get_paginated_response({'clientes_filtrados': serializer.data})
